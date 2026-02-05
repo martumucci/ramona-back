@@ -37,6 +37,7 @@ _password_hasher: PasswordHasher = PasswordHasherImpl()
 _token_generator: TokenGenerator = TokenGeneratorImpl(
     secret=settings.SECRET_KEY,
     expire_minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+    refresh_expire_days=settings.REFRESH_TOKEN_EXPIRE_DAYS,
 )
 
 
@@ -81,6 +82,14 @@ CartRepoDep = Annotated[CartRepository, Depends(get_cart_repo)]
 
 
 # --- Auth ---
+
+
+def get_token_generator() -> TokenGenerator:
+    """Provide the TokenGenerator singleton instance."""
+    return _token_generator
+
+
+TokenGeneratorDep = Annotated[TokenGenerator, Depends(get_token_generator)]
 
 
 def get_current_user_id(

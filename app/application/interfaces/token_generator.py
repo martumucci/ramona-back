@@ -17,7 +17,11 @@ class TokenGenerator(Protocol):
         """
         ...
 
-    def verify(self, token: str) -> str:
+    def generate_refresh_token(self, user_id: str) -> str:
+        """Generate a new refresh token"""
+        ...
+
+    def verify(self, token: str, expected_type: str = "access") -> str:
         """Verify a token and extract the user ID.
 
         Args:
