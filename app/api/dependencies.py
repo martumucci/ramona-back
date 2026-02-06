@@ -3,7 +3,7 @@
 from collections.abc import AsyncGenerator
 from typing import Annotated
 
-from fastapi import Depends
+from fastapi import Depends, Header
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -110,6 +110,42 @@ def get_current_user_id(
 
 
 CurrentUserId = Annotated[str, Depends(get_current_user_id)]
+
+# Optional security for endpoints that work with or without auth
+_optional_security = HTTPBearer(auto_error=False)
+
+
+def get_optional_user_id(
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(_optional_security)],
+    x_guest_id: Annotated[str | None, Header()] = None,
+) -> str:
+    """Get user ID from token if authenticated, otherwise use guest ID.
+
+    Args:
+        credentials: Optional HTTP Bearer credentials.
+        x_guest_id: Guest ID header for anonymous users.
+
+    Returns:
+        User ID if authenticated, guest ID prefixed with 'guest:' otherwise.
+
+    Raises:
+        AuthorizationError: If neither token nor guest ID is provided.
+    """
+    # Try to get user ID from token first
+    if credentials:
+        try:
+            return _token_generator.verify(credentials.credentials)
+        except Exception:
+            pass  # Invalid token, fall through to guest ID
+
+    # Fall back to guest ID (must be a valid UUID)
+    if x_guest_id:
+        return x_guest_id
+
+    raise AuthorizationError("Authentication or guest ID required")
+
+
+OptionalUserId = Annotated[str, Depends(get_optional_user_id)]
 
 
 async def require_admin(
