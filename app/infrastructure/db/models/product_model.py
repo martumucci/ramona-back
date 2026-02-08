@@ -20,6 +20,7 @@ class ProductModel(Base):
     stock: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     image_url: Mapped[str] = mapped_column(String(500), nullable=False, default="")
     category: Mapped[str] = mapped_column(String(100), nullable=False, default="")
+    parent_category: Mapped[str] = mapped_column(String(100), nullable=False, default="")
     created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

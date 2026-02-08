@@ -18,7 +18,8 @@ class Product:
         price: Product price as a Price value object.
         stock: Available stock as a Quantity value object.
         image_url: URL to the product image.
-        category: Product category.
+        category: Product category (e.g., clothing, shoes).
+        parent_category: Parent category (e.g., women, men, sale).
         created_at: Timestamp of creation.
     """
 
@@ -29,4 +30,5 @@ class Product:
     stock: Quantity
     image_url: str
     category: str
+    parent_category: str
     created_at: datetime | None = None

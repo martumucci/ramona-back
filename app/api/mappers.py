@@ -24,6 +24,7 @@ def product_to_response(product: Product) -> ProductResponse:
         stock=product.stock.value,
         image_url=product.image_url,
         category=product.category,
+        parent_category=product.parent_category,
         created_at=product.created_at,
     )
 

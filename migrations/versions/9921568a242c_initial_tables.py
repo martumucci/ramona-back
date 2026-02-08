@@ -28,6 +28,7 @@ def upgrade() -> None:
     sa.Column('stock', sa.Integer(), nullable=False),
     sa.Column('image_url', sa.String(length=500), nullable=False),
     sa.Column('category', sa.String(length=100), nullable=False),
+    sa.Column('parent_category', sa.String(length=100), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )

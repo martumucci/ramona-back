@@ -2,7 +2,7 @@
 
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import distinct, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.application.interfaces.product_repository import ProductRepository
@@ -71,10 +71,34 @@ class SqlAlchemyProductRepository(ProductRepository):
             stock=product.stock.value,
             image_url=product.image_url,
             category=product.category,
+            parent_category=product.parent_category,
         )
         merged = await self._session.merge(model)
         await self._session.flush()
         return self._to_domain(merged)
+
+    async def get_categories(self) -> dict[str, list[str]]:
+        """Retrieve all categories grouped by parent category.
+
+        Returns:
+            A dict mapping parent categories to their child categories.
+        """
+        result = await self._session.execute(
+            select(
+                ProductModel.parent_category,
+                ProductModel.category
+            ).distinct().order_by(
+                ProductModel.parent_category,
+                ProductModel.category
+            )
+        )
+        categories: dict[str, list[str]] = {}
+        for parent, child in result.all():
+            if parent not in categories:
+                categories[parent] = []
+            if child not in categories[parent]:
+                categories[parent].append(child)
+        return categories
 
     @staticmethod
     def _to_domain(model: ProductModel) -> Product:
@@ -86,5 +110,6 @@ class SqlAlchemyProductRepository(ProductRepository):
             stock=Quantity(value=model.stock),
             image_url=model.image_url,
             category=model.category,
+            parent_category=model.parent_category,
             created_at=model.created_at,
         )

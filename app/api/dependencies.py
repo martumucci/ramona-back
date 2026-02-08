@@ -19,6 +19,7 @@ from app.application.use_cases.cart.get_cart import GetCart
 from app.application.use_cases.cart.remove_from_cart import RemoveFromCart
 from app.application.use_cases.cart.update_cart_item import UpdateCartItem
 from app.application.use_cases.products.get_product import GetProduct
+from app.application.use_cases.products.list_categories import ListCategories
 from app.application.use_cases.products.list_products import ListProducts
 from app.config import settings
 from app.domain.enums import Role
@@ -196,6 +197,11 @@ def get_get_product(product_repo: ProductRepoDep) -> GetProduct:
     return GetProduct(product_repo)
 
 
+def get_list_categories(product_repo: ProductRepoDep) -> ListCategories:
+    """Provide a ListCategories use case instance."""
+    return ListCategories(product_repo)
+
+
 def get_get_cart(cart_repo: CartRepoDep) -> GetCart:
     """Provide a GetCart use case instance."""
     return GetCart(cart_repo)
@@ -220,6 +226,7 @@ RegisterUserDep = Annotated[RegisterUser, Depends(get_register_user)]
 LoginUserDep = Annotated[LoginUser, Depends(get_login_user)]
 ListProductsDep = Annotated[ListProducts, Depends(get_list_products)]
 GetProductDep = Annotated[GetProduct, Depends(get_get_product)]
+ListCategoriesDep = Annotated[ListCategories, Depends(get_list_categories)]
 GetCartDep = Annotated[GetCart, Depends(get_get_cart)]
 AddToCartDep = Annotated[AddToCart, Depends(get_add_to_cart)]
 RemoveFromCartDep = Annotated[RemoveFromCart, Depends(get_remove_from_cart)]

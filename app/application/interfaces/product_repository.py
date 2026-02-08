@@ -44,3 +44,12 @@ class ProductRepository(ABC):
             The saved product.
         """
         ...
+
+    @abstractmethod
+    async def get_categories(self) -> dict[str, list[str]]:
+        """Retrieve all categories grouped by parent category.
+
+        Returns:
+            A dict mapping parent categories to their child categories.
+        """
+        ...

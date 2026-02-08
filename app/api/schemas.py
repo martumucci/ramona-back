@@ -58,6 +58,7 @@ class ProductResponse(CamelModel):
     stock: int
     image_url: str
     category: str
+    parent_category: str
     created_at: datetime | None = None
 
 

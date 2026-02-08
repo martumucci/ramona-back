@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Query
 
-from app.api.dependencies import GetProductDep, ListProductsDep
+from app.api.dependencies import GetProductDep, ListCategoriesDep, ListProductsDep
 from app.api.mappers import product_to_response
 from app.api.schemas import ProductResponse
 
@@ -18,6 +18,12 @@ async def list_products(
     """List all products with optional pagination."""
     products = await use_case.execute(offset=offset, limit=limit)
     return [product_to_response(p) for p in products]
+
+
+@router.get("/categories", response_model=dict[str, list[str]])
+async def list_categories(use_case: ListCategoriesDep) -> dict[str, list[str]]:
+    """List all categories grouped by parent category."""
+    return await use_case.execute()
 
 
 @router.get("/{product_id}", response_model=ProductResponse)
